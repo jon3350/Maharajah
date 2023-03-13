@@ -1,0 +1,94 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+:root {
+    --squareLen: min(10vw, 10vh);
+    --halfSquareLen: calc(var(--squareLen)/2);
+}
+
+body {
+    margin: 0;
+    background-color: #edebe9;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.board {
+    margin: 0 10%;
+    display: grid;    
+    grid-template-columns: repeat(8, var(--squareLen));
+}
+
+.square {
+    margin: 0px;
+    padding-bottom: 100%;
+    background-color: #f4dcb4;
+    position: relative;
+}
+
+.square:nth-child(n+1):nth-child(-n+8):nth-child(2n),
+.square:nth-child(n+9):nth-child(-n+16):nth-child(2n+1),
+.square:nth-child(n+17):nth-child(-n+24):nth-child(2n),
+.square:nth-child(n+25):nth-child(-n+32):nth-child(2n+1),
+.square:nth-child(n+33):nth-child(-n+40):nth-child(2n),
+.square:nth-child(n+41):nth-child(-n+48):nth-child(2n+1),
+.square:nth-child(n+49):nth-child(-n+56):nth-child(2n),
+.square:nth-child(n+57):nth-child(-n+64):nth-child(2n+1)
+{
+    background-color: #b48c64;
+}
+
+.square img {
+    position: absolute;
+    width: var(--squareLen);
+    height: var(--squareLen);
+    margin: var(--halfSquareLen);
+    transform: translate(-50%, -50%);
+    border: none;
+}
+
+.square img.smallImage {
+    opacity: 0.7;
+    position: absolute;
+    z-index: 10;
+    width: calc(var(--squareLen)/2);
+    height: calc(var(--squareLen)/2);
+    margin: calc(var(--halfSquareLen)/2);
+    transform: translate(50%, 50%);
+    border: none;
+}
+
+.square.selected {
+    background-color: #d0d46c;
+}
+
+.square.selected:nth-child(n+1):nth-child(-n+8):nth-child(2n),
+.square.selected:nth-child(n+9):nth-child(-n+16):nth-child(2n+1),
+.square.selected:nth-child(n+17):nth-child(-n+24):nth-child(2n),
+.square.selected:nth-child(n+25):nth-child(-n+32):nth-child(2n+1),
+.square.selected:nth-child(n+33):nth-child(-n+40):nth-child(2n),
+.square.selected:nth-child(n+41):nth-child(-n+48):nth-child(2n+1),
+.square.selected:nth-child(n+49):nth-child(-n+56):nth-child(2n),
+.square.selected:nth-child(n+57):nth-child(-n+64):nth-child(2n+1) {
+    background-color: #b0a43c;
+}
+
+.square.magicSquare {
+    background-color: #ffe604 !important;
+}
+
+
+
+/* Purgatory positioning */
+.purgatory {
+    background-color: #b48c64;
+    position: absolute;
+    width: var(--squareLen);
+    height: var(--squareLen);
+    margin: var(--halfSquareLen);
+    transform: translate(300%, -155%);
+    border: none;
+}
+.purgatory.selected {
+    background-color: #d0d46c;
+}
