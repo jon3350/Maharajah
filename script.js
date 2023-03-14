@@ -164,6 +164,28 @@ function makeMove(move) {
         board[rowEnd][colEnd] = board[rowStart][colStart];
         board[rowStart][colStart] = EMPTY;
     }
+
+    //make the hologram disapear if the time traveler is gone
+    let timeWarperExists = false;
+    for(let i=0; i<board.length; i++) { //check if the time warper exists
+        for(let j=0; j<board.length; j++) {
+            if(board[i][j] === TIMEWARPER || board[i][j] === TIMEWARPER + HOLOGRAM) {
+                timeWarperExists = true;
+            }
+        }
+    }
+    if(!timeWarperExists) { //remove the hologram if the time warper exists
+        for(let i=0; i<board.length; i++) {
+            for(let j=0; j<board.length; j++) {
+                if(board[i][j] > HOLOGRAM/2) {
+                    board[i][j] -= HOLOGRAM;
+                }
+            }
+        }
+    }
+
+
+
     return true;
 }
 
@@ -339,8 +361,8 @@ function generatePieceMoves(pieceSquare) {
                     if(inBoardRange(row+i*dist, col+j*dist) && (board[row+i*dist][col+j*dist]===EMPTY || Math.sign(board[row+i*dist][col+j*dist])===enemyColor || (board[row+i*dist][col+j*dist]>HOLOGRAM/2 && board[row+i*dist][col+j*dist]<=HOLOGRAM))) {
                         returnArr.push(factoryMove(pieceSquare,board.length*(row+i*dist)+(col+j*dist)));
                     }
-                    //break conditions; white pieces go through each other
-                    if(!inBoardRange(row+i*dist, col+j*dist) || Math.sign(board[row+i*dist][col+j*dist])===enemyColor) {
+                    //break conditions; white pieces go through each other - not anymore
+                    if(!inBoardRange(row+i*dist, col+j*dist) || (board[row+i*dist][col+j*dist]!==EMPTY && board[row+i*dist][col+j*dist]!==HOLOGRAM)) {
                         break;
                     }
                     dist++;
@@ -417,8 +439,8 @@ function generatePieceMoves(pieceSquare) {
                     if(inBoardRange(row+i*dist, col+j*dist) && (board[row+i*dist][col+j*dist]===EMPTY || Math.sign(board[row+i*dist][col+j*dist])===enemyColor)) {
                         returnArr.push(factoryMove(pieceSquare,board.length*(row+i*dist)+(col+j*dist)));
                     }
-                    //break conditions; white pieces go through each other
-                    if(!inBoardRange(row+i*dist, col+j*dist) || Math.sign(board[row+i*dist][col+j*dist])===enemyColor) {
+                    //break conditions; white pieces go through each other - not anymore
+                    if(!inBoardRange(row+i*dist, col+j*dist) || (board[row+i*dist][col+j*dist]!==EMPTY && board[row+i*dist][col+j*dist]!==HOLOGRAM)) {
                         break;
                     }
                     dist++;
@@ -456,8 +478,8 @@ function generatePieceMoves(pieceSquare) {
                     if(inBoardRange(row+i*dist, col+j*dist) && (board[row+i*dist][col+j*dist]===EMPTY || Math.sign(board[row+i*dist][col+j*dist])===enemyColor)) {
                         returnArr.push(factoryMove(pieceSquare,board.length*(row+i*dist)+(col+j*dist)));
                     }
-                    //break conditions; white pieces go through each other
-                    if(!inBoardRange(row+i*dist, col+j*dist) || Math.sign(board[row+i*dist][col+j*dist])===enemyColor) {
+                    //break conditions; white pieces go through each other - not anymore
+                    if(!inBoardRange(row+i*dist, col+j*dist) || (board[row+i*dist][col+j*dist]!==EMPTY && board[row+i*dist][col+j*dist]!==HOLOGRAM)) {
                         break;
                     }
                     dist++;

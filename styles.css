@@ -9,7 +9,8 @@
 
 body {
     margin: 0;
-    background-color: #edebe9;
+    /* background-color: #edebe9; */
+    background-image: linear-gradient(to top,#edebe9,rgb(170, 144, 255));
     font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -95,4 +96,9 @@ body {
 .displayFlexbox button {
     width: var(--squareLen);
     margin: 0 5%;
+    background-color: rgb(114, 213, 180);
+}
+
+.displayFlexbox button:hover {
+    opacity: 0.7;
 }
