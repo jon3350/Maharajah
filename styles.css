@@ -15,7 +15,7 @@ body {
 }
 
 .board {
-    margin: 0 10%;
+    margin: 0% 10%;
     display: grid;    
     grid-template-columns: repeat(8, var(--squareLen));
 }
@@ -41,9 +41,9 @@ body {
 
 .square img {
     position: absolute;
-    width: var(--squareLen);
-    height: var(--squareLen);
-    margin: var(--halfSquareLen);
+    width: calc(var(--squareLen)*0.90);
+    height: calc(var(--squareLen)*0.90);
+    margin: calc(var(--halfSquareLen));
     transform: translate(-50%, -50%);
     border: none;
 }
@@ -78,6 +78,21 @@ body {
     background-color: #ffe604 !important;
 }
 
+/* Threat indicators */
+.square.whiteThreat {
+    z-index: 100;
+    box-shadow: inset 0px 0px calc(var(--squareLen)/60) calc(var(--squareLen)/60) rgb(21, 0, 255);
+}
+
+.square.blackThreat {
+    z-index: 100;
+    box-shadow: inset 0px 0px calc(var(--squareLen)/60) calc(var(--squareLen)/60) rgb(255, 0, 0);
+}
+
+.square.whiteThreat.blackThreat {
+    z-index: 100;
+    box-shadow: inset 0px 0px calc(var(--squareLen)/30) calc(var(--squareLen)/30) rgb(66, 0, 74);
+}
 
 /* buttons and stuff */
 .displayFlexbox {

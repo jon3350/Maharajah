@@ -1,5 +1,6 @@
 const squareArr = document.querySelectorAll('.square');
 const moveNumber = document.querySelector('[data-moveNumber]');
+const showThreatsButton = document.querySelector('[data-showThreats]');
 
 //negative values are for black pieces
 const EMPTY = 0;
@@ -27,7 +28,7 @@ const board = [
     [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
     [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
     [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, TIMEWARPER+HOLOGRAM, EMPTY, EMPTY, MAHARAJAH, EMPTY, NECROMANCER, EMPTY]
+    [TIMEWARPER+HOLOGRAM, EMPTY, EMPTY, EMPTY, NECROMANCER, EMPTY, EMPTY, MAHARAJAH]
 ];
 
 const history = {
@@ -71,6 +72,7 @@ const history = {
 //PUBLIC STATIC VOID MAIN
 addSquareEventListeners();
 addUndoRedoEventListners();
+addShowThreatsEventListners();
 drawPieces();
 drawSquares();
 
@@ -128,6 +130,18 @@ function makeMove(move) {
         board[0][4] = EMPTY;
     } else if((board[rowStart][colStart] === NECROMANCER || board[rowStart][colStart] === NECROMANCER + HOLOGRAM) &&  (board[rowEnd][colEnd] !== EMPTY  && board[rowEnd][colEnd] !== HOLOGRAM)) {
         //Starting square is unaltered
+
+        //ensure there's only one knight by deleting all present knights
+        for(let i=0; i<board.length; i++) {
+            for(let j=0; j<board.length; j++) {
+                if(board[i][j] === KNIGHT + HOLOGRAM) {
+                    board[i][j] = HOLOGRAM;
+                } else if(board[i][j] === KNIGHT) {
+                    board[i][j] = EMPTY;
+                }
+            }
+        }
+
         if(board[rowEnd][colEnd] > HOLOGRAM/2) {
             board[rowEnd][colEnd] = KNIGHT + HOLOGRAM;
         } else {
@@ -448,7 +462,7 @@ function generatePieceMoves(pieceSquare) {
             }
         }
 
-        //Find Hologram
+        //Find Hologram and edit row and col
         for(let i=0; i<board.length; i++) {
             for(let j=0; j<board.length; j++) {
                 if(board[i][j] >= HOLOGRAM/2) {
@@ -457,15 +471,17 @@ function generatePieceMoves(pieceSquare) {
                 }
             }
         }
-        //skip the next part if hologram is same position as queen
-        if(pieceSquare === row*board.length + col) {
+        //skip the next part if hologram is on a white piece
+        if(inBoardRange(row, col) && Math.sign(board[row][col] - HOLOGRAM)===myColor) {
             return returnArr;
+        } else if(inBoardRange(row, col) && Math.sign(board[row][col] - HOLOGRAM)===enemyColor) { //push the hologram's position then terminate if occupied by black piece
+            returnArr.push(factoryMove(pieceSquare, row*board.length + col));
+            return returnArr;
+        } else if(inBoardRange(row, col) && board[row][col]===HOLOGRAM) { //if the hologram is on an empty square than push that position and continue to Queen moves
+            returnArr.push(factoryMove(pieceSquare, row*board.length + col));
         }
 
-        //Queen moves - with position as hologram, push the original hologram position as well; pieceSquare is the queen's position, not the hologram's
-        if(inBoardRange(row, col) && board[row][col]!==myColor) {
-            returnArr.push(factoryMove(pieceSquare, row*board.length + col))
-        }
+        //Queen moves - with position as hologram; pieceSquare is the queen's position, not the hologram's
         for(let i=-1; i<=1; i++) {
             for(let j=-1; j<=1; j++) {
                 //discard 0,0
@@ -583,13 +599,34 @@ function drawPieces() {
 function drawSquares() {
     //remove all visual classes and then add them
     squareArr.forEach((x,i) => {
-        x.classList.remove('selected', 'magicSquare');
+        x.classList.remove('selected', 'magicSquare', 'whiteThreat', 'blackThreat');
         if(i === magicSquare) {
             x.classList.add('magicSquare');
         } else if(playerMoves.some(move => moveEquals(move, factoryMove(magicSquare,i)))) {
             x.classList.add('selected');
         }
-    })
+    });
+
+
+    //add the threat indicators
+    if(showThreatsButton.getAttribute('data-showThreats') === 'true') {
+        for(let i=0; i<board.length; i++) {
+            for(let j=0; j<board.length; j++) {
+                const moveArr = generateThreatSquares(i*board.length+j);
+                moveArr.forEach(move => {
+                    let piece = board[i][j];
+                    if(piece > HOLOGRAM/2) {
+                        piece /= 2;
+                    }
+                    if(piece > 0) {
+                        squareArr[move.endSquare].classList.add('whiteThreat')
+                    } else {
+                        squareArr[move.endSquare].classList.add('blackThreat')
+                    }
+                });
+            }
+        }
+    }
 }
 
 function addUndoRedoEventListners() {
@@ -607,4 +644,289 @@ function addUndoRedoEventListners() {
         drawSquares();
         drawPieces();
     });
+}
+
+function addShowThreatsEventListners() {
+    showThreatsButton.addEventListener('click', () => {
+        if(showThreatsButton.getAttribute('data-showThreats') == 'false') {
+            showThreatsButton.setAttribute('data-showThreats', 'true');
+            showThreatsButton.innerText = 'Hide Threats'
+        } else {
+            showThreatsButton.setAttribute('data-showThreats', 'false');
+            showThreatsButton.innerText = 'Show Threats'
+        }
+        drawSquares();
+    })
+}
+
+
+
+
+
+
+//rip off of the generate piece moves method; may not work lol
+function generateThreatSquares(pieceSquare) {
+    const returnArr = [];
+    let row = Math.floor(pieceSquare/board.length);
+    let col = pieceSquare%board.length;
+    let piece = board[row][col];
+    //if it's exactly 20 it is the hologram
+    if(piece === HOLOGRAM) {
+        //do nothing
+    } else if(piece > HOLOGRAM/2) {
+        piece -= HOLOGRAM;
+    }
+    let myColor = Math.sign(piece);
+    let enemyColor = -myColor;
+
+    //EMPTY squares; need this becuase if myColor is 0 then eveyrthing is true
+    if(myColor === 0) {
+        return returnArr;
+    }
+
+    //KING moves
+    if(piece===KING*myColor) {
+        for(let i=-1; i<=1; i++) {
+            for(let j=-1; j<=1; j++) {
+                //discard 0,0
+                if(i===0 && j===0) {
+                    continue;
+                }
+                if(inBoardRange(row+i, col+j)) {
+                    returnArr.push(factoryMove(pieceSquare,board.length*(row+i)+(col+j)));
+                }
+            }
+        }
+    }
+
+    //QUEEN moves
+    if(piece===QUEEN*myColor) {
+        for(let i=-1; i<=1; i++) {
+            for(let j=-1; j<=1; j++) {
+                //discard 0,0
+                if(i===0 && j===0) {
+                    continue;
+                }
+                
+                let dist = 1;
+                while(true) {
+                    if(inBoardRange(row+i*dist, col+j*dist)) {
+                        returnArr.push(factoryMove(pieceSquare,board.length*(row+i*dist)+(col+j*dist)));
+                    }
+                    //break conditions
+                    if(!inBoardRange(row+i*dist, col+j*dist) || (board[row+i*dist][col+j*dist]!==EMPTY && board[row+i*dist][col+j*dist]!==HOLOGRAM)) {
+                        break;
+                    }
+                    dist++;
+                }
+            }
+        }
+    }
+
+    //ROOK moves
+    if(piece===ROOK*myColor) {
+        for(let i=-1; i<=1; i++) {
+            for(let j=-1; j<=1; j++) {
+                //discard diagonals and 0,0
+                if ((i===0 && j!==0) || (i!==0 && j===0)) {
+                    let dist = 1;
+                    while(true) {
+                        if(inBoardRange(row+i*dist, col+j*dist)) {
+                            returnArr.push(factoryMove(pieceSquare,board.length*(row+i*dist)+(col+j*dist)));
+                        }
+                        //break conditions
+                        if(!inBoardRange(row+i*dist, col+j*dist) || (board[row+i*dist][col+j*dist]!==EMPTY && board[row+i*dist][col+j*dist]!==HOLOGRAM)) {
+                            break;
+                        }
+                        dist++;
+                    }
+                }
+            }
+        }
+    }
+
+    //BISHOP moves
+    if(piece===BISHOP*myColor) {
+        for(let i=-1; i<=1; i++) {
+            for(let j=-1; j<=1; j++) {
+                //discard non diagonals and 0,0
+                if (i===0 || j===0) {
+                    continue;
+                }
+                
+                let dist = 1;
+                while(true) {
+                    if(inBoardRange(row+i*dist, col+j*dist)) {
+                        returnArr.push(factoryMove(pieceSquare,board.length*(row+i*dist)+(col+j*dist)));
+                    }
+                    //break conditions
+                    if(!inBoardRange(row+i*dist, col+j*dist) || (board[row+i*dist][col+j*dist]!==EMPTY && board[row+i*dist][col+j*dist]!==HOLOGRAM)) {
+                        break;
+                    }
+                    dist++;
+                }
+            }
+        }
+    }
+
+    //KNIGHT moves
+    if(piece==KNIGHT || piece===-KNIGHT) {
+        for(let i=-2; i<=2; i++) {
+            for(let j=-2; j<=2; j++) {
+                //discard all non knight moves
+                if(i===2*j || j===2*i || i===-2*j || j===-2*i) {
+                    if(inBoardRange(row+i, col+j)) {
+                        returnArr.push(factoryMove(pieceSquare,board.length*(row+i)+(col+j)));
+                    }
+                }
+            }
+        }
+    }
+
+    //PAWN moves
+    if(piece===PAWN*myColor) {
+        //capturing
+        if(inBoardRange(row+1, col+1)) {
+            returnArr.push(factoryMove(pieceSquare,board.length*(row+1)+(col+1)));
+        }
+        if(inBoardRange(row+1, col-1)) {
+            returnArr.push(factoryMove(pieceSquare,board.length*(row+1)+(col-1)));
+        }
+    }
+
+    //MAHARAJAH MOVES
+    if(piece === MAHARAJAH*myColor) {
+        //Queen moves
+        for(let i=-1; i<=1; i++) {
+            for(let j=-1; j<=1; j++) {
+                //discard 0,0
+                if(i===0 && j===0) {
+                    continue;
+                }
+                
+                let dist = 1;
+                while(true) {
+                    if(inBoardRange(row+i*dist, col+j*dist)) {
+                        returnArr.push(factoryMove(pieceSquare,board.length*(row+i*dist)+(col+j*dist)));
+                    }
+                    //break conditions; white pieces go through each other - not anymore
+                    if(!inBoardRange(row+i*dist, col+j*dist) || (board[row+i*dist][col+j*dist]!==EMPTY && board[row+i*dist][col+j*dist]!==HOLOGRAM)) {
+                        break;
+                    }
+                    dist++;
+                }
+            }
+        }
+        //KnightMoves
+        for(let i=-2; i<=2; i++) {
+            for(let j=-2; j<=2; j++) {
+                //discard all non knight moves
+                if(i===2*j || j===2*i || i===-2*j || j===-2*i) {
+                    if(inBoardRange(row+i, col+j)) {
+                        returnArr.push(factoryMove(pieceSquare,board.length*(row+i)+(col+j)));
+                    }
+                }
+            }
+        }
+    }
+
+    //HOLOGRAM MOVES
+    //N/A
+
+    //NECROMANCER MOVes
+    if(piece === NECROMANCER) {
+        //King moves
+        for(let i=-1; i<=1; i++) {
+            for(let j=-1; j<=1; j++) {
+                //discard 0,0
+                if(i===0 && j===0) {
+                    continue;
+                }
+                if(inBoardRange(row+i, col+j)) {
+                    returnArr.push(factoryMove(pieceSquare,board.length*(row+i)+(col+j)));
+                }
+            }
+        }
+
+        //Knight moves but CANT CAPTURE
+        // for(let i=-2; i<=2; i++) {
+        //     for(let j=-2; j<=2; j++) {
+        //         //discard all non knight moves
+        //         if(i===2*j || j===2*i || i===-2*j || j===-2*i) {
+        //             if(inBoardRange(row+i, col+j) && (board[row+i][col+j]===EMPTY || (board[row+i][col+j]>HOLOGRAM/2 && board[row+i][col+j]<=HOLOGRAM)) ) {
+        //                 returnArr.push(factoryMove(pieceSquare,board.length*(row+i)+(col+j)));
+        //             }
+        //         }
+        //     }
+        // }
+    }
+
+    //DO THIS LAST SINCE IT MAY ULTER ROW AND COL, but honestly shouldn't matter since only 1 loop should run
+    if(piece === TIMEWARPER*myColor) {
+        //Queen moves
+        for(let i=-1; i<=1; i++) {
+            for(let j=-1; j<=1; j++) {
+                //discard 0,0
+                if(i===0 && j===0) {
+                    continue;
+                }
+                
+                let dist = 1;
+                while(true) {
+                    if(inBoardRange(row+i*dist, col+j*dist)) {
+                        returnArr.push(factoryMove(pieceSquare,board.length*(row+i*dist)+(col+j*dist)));
+                    }
+                    //break conditions; white pieces go through each other - not anymore
+                    if(!inBoardRange(row+i*dist, col+j*dist) || (board[row+i*dist][col+j*dist]!==EMPTY && board[row+i*dist][col+j*dist]!==HOLOGRAM)) {
+                        break;
+                    }
+                    dist++;
+                }
+            }
+        }
+
+        //Find Hologram and edit row and col
+        for(let i=0; i<board.length; i++) {
+            for(let j=0; j<board.length; j++) {
+                if(board[i][j] >= HOLOGRAM/2) {
+                    row = i;
+                    col = j;
+                }
+            }
+        }
+        //skip the next part if hologram is on a white piece
+        if(inBoardRange(row, col) && Math.sign(board[row][col] - HOLOGRAM)===myColor) {
+            returnArr.push(factoryMove(pieceSquare, row*board.length + col)); //ADDED THIS LINE FOR THREATS
+            return returnArr;
+        } else if(inBoardRange(row, col) && Math.sign(board[row][col] - HOLOGRAM)===enemyColor) { //push the hologram's position then terminate if occupied by black piece
+            returnArr.push(factoryMove(pieceSquare, row*board.length + col));
+            return returnArr;
+        } else if(inBoardRange(row, col) && board[row][col]===HOLOGRAM) { //if the hologram is on an empty square than push that position and continue to Queen moves
+            returnArr.push(factoryMove(pieceSquare, row*board.length + col));
+        }
+
+        //Queen moves - with position as hologram; pieceSquare is the queen's position, not the hologram's
+        for(let i=-1; i<=1; i++) {
+            for(let j=-1; j<=1; j++) {
+                //discard 0,0
+                if(i===0 && j===0) {
+                    continue;
+                }
+                
+                let dist = 1;
+                while(true) {
+                    if(inBoardRange(row+i*dist, col+j*dist)) {
+                        returnArr.push(factoryMove(pieceSquare,board.length*(row+i*dist)+(col+j*dist)));
+                    }
+                    //break conditions; white pieces go through each other - not anymore
+                    if(!inBoardRange(row+i*dist, col+j*dist) || (board[row+i*dist][col+j*dist]!==EMPTY && board[row+i*dist][col+j*dist]!==HOLOGRAM)) {
+                        break;
+                    }
+                    dist++;
+                }
+            }
+        }
+    }
+
+    return returnArr;
 }

@@ -13,11 +13,11 @@
     <!-- https://commons.wikimedia.org/wiki/Category:SVG_chess_pieces -->
     <h1>--Chess--</h1>
     <div class="board">
-        <div class="square"></div>
-        <div class="square"><img src="imgKnightBlack.svg"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
+        <div class="square whiteThreat"></div>
+        <div class="square whiteThreat"><img src="imgKnightBlack.svg"></div>
+        <div class="square blackThreat"></div>
+        <div class="square blackThreat"></div>
+        <div class="square whiteThreat blackThreat"></div>
         <div class="square"></div>
         <div class="square"></div>
         <div class="square"></div>
@@ -84,6 +84,7 @@
         <div data-moveNumber>MoveNumber: 0</div>
         <button data-undoButton>Undo</button>
         <button data-redoButton>Redo</button>
+        <button data-showThreats="false">Show Threats</button>
     </div>
 </body>
 </html>
