@@ -28,7 +28,7 @@ const board = [
     [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
     [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
     [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [TIMEWARPER+HOLOGRAM, EMPTY, EMPTY, EMPTY, NECROMANCER, EMPTY, EMPTY, MAHARAJAH]
+    [EMPTY, TIMEWARPER+HOLOGRAM, EMPTY, NECROMANCER, KING, EMPTY, MAHARAJAH, EMPTY]
 ];
 
 const history = {
@@ -142,16 +142,25 @@ function makeMove(move) {
             }
         }
 
+        if(board[rowStart][colStart] === NECROMANCER + HOLOGRAM) {
+            board[rowStart][colStart] = KNIGHT + HOLOGRAM;
+        } else if(board[rowStart][colStart] === NECROMANCER) {
+            board[rowStart][colStart] = KNIGHT;
+        }
         if(board[rowEnd][colEnd] > HOLOGRAM/2) {
-            board[rowEnd][colEnd] = KNIGHT + HOLOGRAM;
+            board[rowEnd][colEnd] = NECROMANCER + HOLOGRAM;
         } else {
-            board[rowEnd][colEnd] = KNIGHT;
+            board[rowEnd][colEnd] = NECROMANCER;
         }
     } else if(board[rowStart][colStart] === HOLOGRAM) {
         board[rowEnd][colEnd] = HOLOGRAM;
         board[rowStart][colStart] = EMPTY;
     } else if(rowStart===6 && (board[rowStart][colStart] === -PAWN || board[rowStart][colStart] === -PAWN + HOLOGRAM)) {
-        board[rowEnd][colEnd] += -QUEEN; //incase there was a hologram
+        if(board[rowEnd][colEnd] > HOLOGRAM/2) {
+            board[rowEnd][colEnd] = -QUEEN + HOLOGRAM;
+        } else {
+            board[rowEnd][colEnd] = -QUEEN;
+        }
         board[rowStart][colStart] = EMPTY;
         if(board[rowStart][colStart] === -PAWN + HOLOGRAM) {
             board[rowStart][colStart] = HOLOGRAM;
@@ -590,6 +599,8 @@ function drawPieces() {
                 x.src = 'imgPawnBlack.svg';
             } else if(piece === KNIGHT) {
                 x.src = 'imgHorseWhite.svg';
+            } else if(piece === KING) {
+                x.src = 'imgKingWhite.svg';
             }
             squareArr[i*board.length+j].appendChild(x);
         }
