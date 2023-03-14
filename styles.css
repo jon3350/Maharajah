@@ -78,17 +78,21 @@ body {
 }
 
 
-
-/* Purgatory positioning */
-.purgatory {
-    background-color: #b48c64;
-    position: absolute;
-    width: var(--squareLen);
-    height: var(--squareLen);
-    margin: var(--halfSquareLen);
-    transform: translate(300%, -155%);
-    border: none;
+/* buttons and stuff */
+.displayFlexbox {
+    display: flex;
+    margin: 1%;
+    justify-content: flex-start;
 }
-.purgatory.selected {
-    background-color: #d0d46c;
+
+.displayFlexbox div {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 1.2em;
+    margin-left: var(--squareLen);
+    margin-right: 5%;
+}
+
+.displayFlexbox button {
+    width: var(--squareLen);
+    margin: 0 5%;
 }
