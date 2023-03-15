@@ -389,6 +389,10 @@ function generatePieceMoves(pieceSquare) {
                         break;
                     }
                     dist++;
+                    //Ranger nert
+                    if(dist > 2) {
+                        break;
+                    }
                 }
             }
         }
@@ -825,6 +829,10 @@ function generateThreatSquares(pieceSquare) {
                         break;
                     }
                     dist++;
+                    //Ranger nert
+                    if(dist > 2) {
+                        break;
+                    }
                 }
             }
         }
