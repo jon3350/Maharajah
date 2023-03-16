@@ -152,9 +152,20 @@ function makeMove(move) {
         } else {
             board[rowEnd][colEnd] = NECROMANCER;
         }
-    } else if(board[rowStart][colStart] === HOLOGRAM) {
-        board[rowEnd][colEnd] = HOLOGRAM;
-        board[rowStart][colStart] = EMPTY;
+    } else if(board[rowStart][colStart] === TIMEWARPER || board[rowStart][colStart] === TIMEWARPER + HOLOGRAM) {
+        board[rowEnd][colEnd] = TIMEWARPER;
+
+        //delete the hologram wherever it is
+        for(let i=0; i<board.length; i++) {
+            for(let j=0; j<board.length;j++) {
+                if(board[i][j] > HOLOGRAM/2) {
+                    board[i][j] -= HOLOGRAM;
+                }
+            }
+        }
+
+        board[rowStart][colStart] = HOLOGRAM;
+
     } else if(rowStart===6 && (board[rowStart][colStart] === -PAWN || board[rowStart][colStart] === -PAWN + HOLOGRAM)) {
         if(board[rowEnd][colEnd] > HOLOGRAM/2) {
             board[rowEnd][colEnd] = -QUEEN + HOLOGRAM;
@@ -165,7 +176,19 @@ function makeMove(move) {
         if(board[rowStart][colStart] === -PAWN + HOLOGRAM) {
             board[rowStart][colStart] = HOLOGRAM;
         }
-    } else if(board[rowEnd][colEnd] === NECROMANCER || board[rowEnd][colEnd] ===NECROMANCER + HOLOGRAM) {
+    } else if(board[rowEnd][colEnd] === NECROMANCER || board[rowEnd][colEnd] === NECROMANCER + HOLOGRAM) {
+
+        //ensure there's only one knight by deleting all present knights
+        for(let i=0; i<board.length; i++) {
+            for(let j=0; j<board.length; j++) {
+                if(board[i][j] === KNIGHT + HOLOGRAM) {
+                    board[i][j] = HOLOGRAM;
+                } else if(board[i][j] === KNIGHT) {
+                    board[i][j] = EMPTY;
+                }
+            }
+        }
+
         if(board[rowEnd][colEnd] > HOLOGRAM/2) {
             board[rowEnd][colEnd] = KNIGHT + HOLOGRAM;
         } else {
@@ -409,19 +432,19 @@ function generatePieceMoves(pieceSquare) {
         }
     }
 
-    //HOLOGRAM MOVES
-    if(piece === HOLOGRAM) {
-        //find the timewarper in the previous position
-        const prevBoard = history.arr[history.moveNum-1];
-        for(let i=0; i<board.length; i++) {
-            for(let j=0; j<board.length;j++) {
-                //don't push it if it's the same position or at the timewarper's position
-                if(prevBoard[i][j] === TIMEWARPER  &&  i*board.length+j !== pieceSquare && board[i][j] !== TIMEWARPER) {
-                    returnArr.push(factoryMove(pieceSquare,board.length*(i)+(j)));
-                }
-            }
-        }
-    }
+    //HOLOGRAM MOVES - no longer supported
+    // if(piece === HOLOGRAM) {
+    //     //find the timewarper in the previous position
+    //     const prevBoard = history.arr[history.moveNum-1];
+    //     for(let i=0; i<board.length; i++) {
+    //         for(let j=0; j<board.length;j++) {
+    //             //don't push it if it's the same position or at the timewarper's position
+    //             if(prevBoard[i][j] === TIMEWARPER  &&  i*board.length+j !== pieceSquare && board[i][j] !== TIMEWARPER) {
+    //                 returnArr.push(factoryMove(pieceSquare,board.length*(i)+(j)));
+    //             }
+    //         }
+    //     }
+    // }
 
     //NECROMANCER MOVes
     if(piece === NECROMANCER) {
