@@ -176,7 +176,7 @@ function makeMove(move) {
         if(board[rowStart][colStart] === -PAWN + HOLOGRAM) {
             board[rowStart][colStart] = HOLOGRAM;
         }
-    } else if(board[rowEnd][colEnd] === NECROMANCER || board[rowEnd][colEnd] === NECROMANCER + HOLOGRAM) {
+    } else if( (board[rowEnd][colEnd] === NECROMANCER || board[rowEnd][colEnd] === NECROMANCER + HOLOGRAM) && !(board[rowStart][colStart] === -KING || board[rowStart][colStart] === -KING + HOLOGRAM) ) {
 
         //ensure there's only one knight by deleting all present knights
         for(let i=0; i<board.length; i++) {
@@ -432,20 +432,6 @@ function generatePieceMoves(pieceSquare) {
         }
     }
 
-    //HOLOGRAM MOVES - no longer supported
-    // if(piece === HOLOGRAM) {
-    //     //find the timewarper in the previous position
-    //     const prevBoard = history.arr[history.moveNum-1];
-    //     for(let i=0; i<board.length; i++) {
-    //         for(let j=0; j<board.length;j++) {
-    //             //don't push it if it's the same position or at the timewarper's position
-    //             if(prevBoard[i][j] === TIMEWARPER  &&  i*board.length+j !== pieceSquare && board[i][j] !== TIMEWARPER) {
-    //                 returnArr.push(factoryMove(pieceSquare,board.length*(i)+(j)));
-    //             }
-    //         }
-    //     }
-    // }
-
     //NECROMANCER MOVes
     if(piece === NECROMANCER) {
         //King moves
@@ -460,18 +446,6 @@ function generatePieceMoves(pieceSquare) {
                 }
             }
         }
-
-        //Knight moves but CANT CAPTURE
-        // for(let i=-2; i<=2; i++) {
-        //     for(let j=-2; j<=2; j++) {
-        //         //discard all non knight moves
-        //         if(i===2*j || j===2*i || i===-2*j || j===-2*i) {
-        //             if(inBoardRange(row+i, col+j) && (board[row+i][col+j]===EMPTY || (board[row+i][col+j]>HOLOGRAM/2 && board[row+i][col+j]<=HOLOGRAM)) ) {
-        //                 returnArr.push(factoryMove(pieceSquare,board.length*(row+i)+(col+j)));
-        //             }
-        //         }
-        //     }
-        // }
     }
 
     //DO THIS LAST SINCE IT MAY ULTER ROW AND COL, but honestly shouldn't matter since only 1 loop should run
@@ -889,18 +863,6 @@ function generateThreatSquares(pieceSquare) {
                 }
             }
         }
-
-        //Knight moves but CANT CAPTURE
-        // for(let i=-2; i<=2; i++) {
-        //     for(let j=-2; j<=2; j++) {
-        //         //discard all non knight moves
-        //         if(i===2*j || j===2*i || i===-2*j || j===-2*i) {
-        //             if(inBoardRange(row+i, col+j) && (board[row+i][col+j]===EMPTY || (board[row+i][col+j]>HOLOGRAM/2 && board[row+i][col+j]<=HOLOGRAM)) ) {
-        //                 returnArr.push(factoryMove(pieceSquare,board.length*(row+i)+(col+j)));
-        //             }
-        //         }
-        //     }
-        // }
     }
 
     //DO THIS LAST SINCE IT MAY ULTER ROW AND COL, but honestly shouldn't matter since only 1 loop should run
