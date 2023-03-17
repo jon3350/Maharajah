@@ -109,11 +109,8 @@ function cloneBoard(board) {
 }
 
 //FUNCTIONS
-//return false if its a checkmate move; true otherwise
+//make the move
 function makeMove(move) {
-    if(board[Math.floor(move.endSquare/board.length)][Math.floor(move.endSquare%board.length)]===KING || board[Math.floor(move.endSquare/board.length)][Math.floor(move.endSquare%board.length)]==-KING) {
-        return false;
-    }
     const rowStart = Math.floor(move.startSquare/board.length);
     const colStart = move.startSquare%board.length;
     const rowEnd = Math.floor(move.endSquare/board.length);
@@ -129,8 +126,6 @@ function makeMove(move) {
         board[0][5] = -ROOK;
         board[0][4] = EMPTY;
     } else if((board[rowStart][colStart] === NECROMANCER || board[rowStart][colStart] === NECROMANCER + HOLOGRAM) &&  (board[rowEnd][colEnd] !== EMPTY  && board[rowEnd][colEnd] !== HOLOGRAM)) {
-        //Starting square is unaltered
-
         //ensure there's only one knight by deleting all present knights
         for(let i=0; i<board.length; i++) {
             for(let j=0; j<board.length; j++) {
@@ -176,7 +171,7 @@ function makeMove(move) {
         if(board[rowStart][colStart] === -PAWN + HOLOGRAM) {
             board[rowStart][colStart] = HOLOGRAM;
         }
-    } else if( (board[rowEnd][colEnd] === NECROMANCER || board[rowEnd][colEnd] === NECROMANCER + HOLOGRAM) && !(board[rowStart][colStart] === -KING || board[rowStart][colStart] === -KING + HOLOGRAM) ) {
+    } else if(board[rowEnd][colEnd] === NECROMANCER || board[rowEnd][colEnd] === NECROMANCER + HOLOGRAM) {
 
         //ensure there's only one knight by deleting all present knights
         for(let i=0; i<board.length; i++) {
@@ -229,22 +224,6 @@ function makeMove(move) {
             }
         }
     }
-
-
-
-    return true;
-}
-
-function unMakeMove(move) {
-    return makeMove(factoryMove(move.endSquare, move.startSquare));
-}
-
-//returns whether or not a square is Empty or hologram
-function isEmpty(row, col) {
-    if(board[row][col] === EMPTY || board[row][col] === HOLOGRAM) {
-        return true;
-    }
-    return false;
 }
 
 function generatePieceMoves(pieceSquare) {
@@ -432,7 +411,7 @@ function generatePieceMoves(pieceSquare) {
         }
     }
 
-    //NECROMANCER MOVes
+    //NECROMANCER Moves
     if(piece === NECROMANCER) {
         //King moves
         for(let i=-1; i<=1; i++) {
@@ -442,7 +421,10 @@ function generatePieceMoves(pieceSquare) {
                     continue;
                 }
                 if(inBoardRange(row+i, col+j) && (board[row+i][col+j]===EMPTY || Math.sign(board[row+i][col+j])===enemyColor || (board[row+i][col+j]>HOLOGRAM/2 && board[row+i][col+j]<=HOLOGRAM) )) {
-                    returnArr.push(factoryMove(pieceSquare,board.length*(row+i)+(col+j)));
+                    //can't take the enemy king though
+                    if(!(board[row+i][col+j]===enemyColor*KING || board[row+i][col+j]===enemyColor*KING + HOLOGRAM)) {
+                        returnArr.push(factoryMove(pieceSquare,board.length*(row+i)+(col+j)));
+                    }
                 }
             }
         }
@@ -539,10 +521,6 @@ function squareClicked(index) {
     } else if(playerMoves.some(move => moveEquals(move, factoryMove(magicSquare, index)))) {
         //alert checkmate
         const endSquare = factoryMove(magicSquare, index).endSquare;
-        if(board[Math.floor(endSquare/board.length)][endSquare%board.length] === KING || board[Math.floor(endSquare/board.length)][endSquare%board.length] === -KING) {
-            alert('checkMate!');
-        }
-
         makeMove(factoryMove(magicSquare, index));
         history.pushPosition(board);
         magicSquare = -1;
@@ -859,7 +837,10 @@ function generateThreatSquares(pieceSquare) {
                     continue;
                 }
                 if(inBoardRange(row+i, col+j)) {
-                    returnArr.push(factoryMove(pieceSquare,board.length*(row+i)+(col+j)));
+                    //can't take the enemy king though
+                    if(!(board[row+i][col+j]===enemyColor*KING || board[row+i][col+j]===enemyColor*KING + HOLOGRAM)) {
+                        returnArr.push(factoryMove(pieceSquare,board.length*(row+i)+(col+j)));
+                    }
                 }
             }
         }
