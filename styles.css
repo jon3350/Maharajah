@@ -180,23 +180,35 @@ body {
 /* buttons and stuff */
 .displayFlexbox {
     display: flex;
-    margin: 1%;
+    margin: calc(var(--squareLen) * 0.1);
     justify-content: flex-start;
+    align-items: stretch;
 }
 
 .displayFlexbox div {
+    align-self: center;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-size: 1.2em;
-    margin-left: var(--squareLen);
-    margin-right: 5%;
+    font-size: calc(var(--squareLen) * 0.3);
+    margin-left: calc(var(--squareLen) * 0.1);
+    margin-right: calc(var(--squareLen) * 0.1);
 }
 
 .displayFlexbox button {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     width: var(--squareLen);
-    margin: 0 5%;
+    margin: 0 calc(var(--squareLen) * 0.3);
+    font-size: calc(var(--squareLen) * 0.2);
     background-color: rgb(114, 213, 180);
 }
 
 .displayFlexbox button:hover {
     opacity: 0.7;
+}
+
+
+
+
+/* Overriding classes */
+.hide {
+    display: none;
 }

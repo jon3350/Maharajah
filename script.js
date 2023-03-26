@@ -125,6 +125,7 @@ const timerArea = {
     topTimerRef: document.querySelector('[data-topTimer]'),
     botTimerRef: document.querySelector('[data-botTimer]'),
     scoreDisplay: document.querySelector('[data-scoreDisplay]'),
+    timerActive: true,
     playerBotName: 'PB',
     playerTopName: 'PT',
     topScore: 0,
@@ -142,6 +143,23 @@ const timerArea = {
         const gameTimeSelect = document.querySelector('#gameTimeSelect');
         const newGameButton = document.querySelector('[data-newGameButton]');
         const swapColorsButton = document.querySelector('[data-swapColors]');
+        const hideTimerButton = document.querySelector('[data-hideTimerButton]');
+        const timerWrapper = document.querySelector('[data-timerWrapper]');
+
+        hideTimerButton.addEventListener('click', () => {
+            this.timerActive = !this.timerActive;
+            if(this.timerActive) {
+                hideTimerButton.innerText = 'Hide Timer';
+                timerWrapper.classList.remove('hide');
+
+            } else {
+                hideTimerButton.innerText = 'Show Timer';
+                timerWrapper.classList.add('hide');
+                //make sure no flags are given and the timer is stopped - the updateAfterPieceMoveMethod is also disabled
+                this.topTime = 1*1000*60; this.botTime = 1*1000*60;
+                this.stopTimer();
+            }
+        })
 
         playerBotInput.addEventListener('change', () => {
             timerArea.playerBotName = playerBotInput.value;
@@ -305,6 +323,11 @@ const timerArea = {
         this.scoreDisplay.innerText = `${this.playerTopName}: ${this.topScore} vs ${this.playerBotName}: ${this.botScore} `;
     },
     updateTimerAfterAMoveIsMade(piece) {
+        //don't do anything if the timer is hidden
+        if(!this.timerActive) {
+            return;
+        }
+
         //check for checkmate, and stop the timer if true
         blackKingExists = false; whiteKingExists = false;
         for(let i=0; i<board.length; i++) {
@@ -848,9 +871,6 @@ function drawSquares() {
                 const moveArr = generatePieceMoves(i*board.length+j);
                 moveArr.forEach(move => {
                     let piece = board[i][j];
-                    if(piece > HOLOGRAM/2) {
-                        piece /= 2;
-                    }
                     if(piece > 0) {
                         squareArr[move.endSquare].classList.add('whiteThreat')
                     } else {
