@@ -12,71 +12,92 @@
 <body>
     <!-- https://commons.wikimedia.org/wiki/Category:SVG_chess_pieces -->
     <h1>--Chess--</h1>
-    <div class="board">
-        <div class="square whiteThreat"></div>
-        <div class="square whiteThreat"><img src="imgKnightBlack.svg"></div>
-        <div class="square blackThreat"></div>
-        <div class="square blackThreat"></div>
-        <div class="square whiteThreat blackThreat"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"><img src="imgKnightBlack.svg"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"><img src="imgKnightBlack.svg"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"><img src="imgKnightBlack.svg"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
+
+    <div class="boardTimerFlexbox">
+        <div class="board">
+            <div class="square whiteThreat"></div>
+            <div class="square whiteThreat"><img src="imgKnightBlack.svg"></div>
+            <div class="square blackThreat"></div>
+            <div class="square blackThreat"></div>
+            <div class="square whiteThreat blackThreat"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"><img src="imgKnightBlack.svg"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"><img src="imgKnightBlack.svg"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"><img src="imgKnightBlack.svg"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+        </div>
+
+        <div class="timerWrapper">
+            <div data-topTimer class="timer topTimer">00: 00</div>
+            <input data-playerTopInput type="text" value="PT">
+            <div data-scoreDisplay class="scoreDisplay">PT: 0 vs PB: 0</div>
+            <button data-swapColors>Swap Colors</button>
+            <button data-newGameButton class="newGameButton">New Game</button>
+            <select id="gameTimeSelect">
+                <option value="1+2">Bullet (1 +2)</option>
+                <option value="3+3">Blitz (3 +3)</option>
+                <option value="5+5">Blitz (5 +5)</option>
+                <option value="10+5">Rapid (10 +5)</option>
+            </select>
+            <input data-playerBotInput type="text" value="PB">
+            <div data-botTimer class="timer botTimer">00: 00</div>
+
+        </div>
+
     </div>
 
 

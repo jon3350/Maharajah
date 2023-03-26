@@ -14,8 +14,91 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.boardTimerFlexbox {
+    display: flex;
+    align-items: center;
+}
+
+.timerWrapper {
+    background-color: whitesmoke;
+    padding: calc(var(--squareLen) * 0.1);
+    border: grey solid calc(var(--squareLen) * 0.05);
+}
+
+.timer {
+    display: flex;
+    background-color: white;
+    border: grey solid calc(var(--squareLen) * 0.05);
+    margin: calc(var(--squareLen) * 0.05);
+    height: var(--squareLen);
+    width: calc(var(--squareLen) * 4);
+    justify-content: center;
+    align-items: center;
+    font-size: calc(var(--squareLen) * 0.7);
+}
+
+.timer.green {
+    background-color: rgb(67, 225, 67);
+}
+
+.timerWrapper button {
+    border: none;
+    margin: calc(var(--squareLen) * 0.05);
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: calc(var(--squareLen) * 0.5);
+    height: calc(var(--squareLen) * 0.6);
+    width: calc(var(--squareLen) * 4);
+}
+
+.timerWrapper button:hover {
+    background-color: rgb(130, 190, 40);
+}
+
+.timerWrapper select {
+    border: none;
+    margin: calc(var(--squareLen) * 0.05);
+    background-color: rgb(225, 225, 225);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: calc(var(--squareLen) * 0.5);
+    height: calc(var(--squareLen) * 0.6);
+    width: calc(var(--squareLen) * 4);
+}
+
+.timerWrapper .scoreDisplay {
+    border: none;
+    margin: calc(var(--squareLen) * 0.05);
+    background-color: rgb(225, 225, 225);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: calc(var(--squareLen) * 0.5);
+    height: calc(var(--squareLen) * 0.6);
+    width: calc(var(--squareLen) * 4);
+}
+
+.timerWrapper input {
+    border: none;
+    margin: calc(var(--squareLen) * 0.05);
+    background-color: rgb(255, 251, 168);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: calc(var(--squareLen) * 0.5);
+    height: calc(var(--squareLen) * 0.6);
+    width: calc(var(--squareLen) * 4);
+}
+
+
+
+
+
 .board {
-    margin: 0% 10%;
+    margin: 0% calc(var(--squareLen) * 0.5);
     display: grid;    
     grid-template-columns: repeat(8, var(--squareLen));
 }
